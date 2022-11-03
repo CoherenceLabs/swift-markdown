@@ -29,7 +29,23 @@ public extension OrderedList {
     // MARK: ListItemContainer
 
     init<Items: Sequence>(_ items: Items) where Items.Element == ListItem {
-        try! self.init(.orderedList(parsedRange: nil, items.map { $0.raw.markup }))
+        try! self.init(.orderedList(parsedRange: nil, items.map { $0.raw.markup }, tight: false)) // TODO: Is `tight: false` appropriate here?
+    }
+
+    /// Whether the list is "tight" (item content should not be wrapped in paragraphs).
+    var tight: Bool {
+        get {
+            guard case let .orderedList(tight, _) = _data.raw.markup.data else {
+                fatalError("\(self) markup wrapped unexpected \(_data.raw)")
+            }
+            return tight
+        }
+        set {
+            guard tight != newValue else {
+                return
+            }
+            _data = _data.replacingSelf(.orderedList(parsedRange: nil, _data.raw.markup.copyChildren(), tight: newValue, startIndex: startIndex))
+        }
     }
 
     /// The starting index for the list.
@@ -39,7 +55,7 @@ public extension OrderedList {
     /// HTML, clients may omit the `start` attribute of the rendered list when this returns 1.
     var startIndex: UInt {
         get {
-            guard case let .orderedList(start) = _data.raw.markup.data else {
+            guard case let .orderedList(_, start) = _data.raw.markup.data else {
                 fatalError("\(self) markup wrapped unexpected \(_data.raw)")
             }
             return start
@@ -48,7 +64,7 @@ public extension OrderedList {
             guard startIndex != newValue else {
                 return
             }
-            _data = _data.replacingSelf(.orderedList(parsedRange: nil, _data.raw.markup.copyChildren(), startIndex: newValue))
+            _data = _data.replacingSelf(.orderedList(parsedRange: nil, _data.raw.markup.copyChildren(), tight: tight, startIndex: newValue))
         }
     }
 

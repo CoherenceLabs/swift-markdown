@@ -30,7 +30,23 @@ public extension UnorderedList {
     // MARK: ListItemContainer
 
     init<Items: Sequence>(_ items: Items) where Items.Element == ListItem {
-        try! self.init(.unorderedList(parsedRange: nil, items.map { $0.raw.markup }))
+        try! self.init(.unorderedList(parsedRange: nil, items.map { $0.raw.markup }, tight: false)) // TODO: Is `tight: false` appropriate here?
+    }
+
+    /// Whether the list is "tight" (item content should not be wrapped in paragraphs).
+    var tight: Bool {
+        get {
+            guard case let .unorderedList(tight) = _data.raw.markup.data else {
+                fatalError("\(self) markup wrapped unexpected \(_data.raw)")
+            }
+            return tight
+        }
+        set {
+            guard tight != newValue else {
+                return
+            }
+            _data = _data.replacingSelf(.unorderedList(parsedRange: nil, _data.raw.markup.copyChildren(), tight: newValue))
+        }
     }
 
     // MARK: Visitation

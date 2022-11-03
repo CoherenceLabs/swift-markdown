@@ -48,12 +48,12 @@ final class RawMarkupToMarkupTests: XCTestCase {
     }
 
     func testOrderedList() {
-        XCTAssertNoThrow(try OrderedList(.orderedList(parsedRange: nil, [])))
+        XCTAssertNoThrow(try OrderedList(.orderedList(parsedRange: nil, [], tight: false)))
         XCTAssertThrowsError(try OrderedList(.softBreak(parsedRange: nil)))
     }
 
     func testUnorderedList() {
-        XCTAssertNoThrow(try UnorderedList(.unorderedList(parsedRange: nil, [])))
+        XCTAssertNoThrow(try UnorderedList(.unorderedList(parsedRange: nil, [], tight: false)))
         XCTAssertThrowsError(try UnorderedList(.softBreak(parsedRange: nil)))
     }
 
