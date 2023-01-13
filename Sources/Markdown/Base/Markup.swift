@@ -49,6 +49,8 @@ func makeMarkup(_ data: _MarkupData) -> Markup {
         return LineBreak(data)
     case .link:
         return Link(data)
+    case .linkDefinitions:
+        return LinkDefinitions(data)
     case .softBreak:
         return SoftBreak(data)
     case .strong:

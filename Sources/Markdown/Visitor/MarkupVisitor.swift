@@ -188,6 +188,14 @@ public protocol MarkupVisitor {
     mutating func visitLink(_ link: Link) -> Result
     
     /**
+     Visit a `LinkDefinitions` element and return the result.
+
+     - parameter linkDefinitions: An `LinkDefinitions` element.
+     - returns: The result of the visit.
+     */
+    mutating func visitLinkDefinitions(_ linkDefinitions: LinkDefinitions) -> Result
+
+    /**
      Visit a `SoftBreak` element and return the result.
 
      - parameter softBreak: An `SoftBreak` element.
@@ -331,6 +339,9 @@ extension MarkupVisitor {
     }
     public mutating func visitLink(_ link: Link) -> Result {
         return defaultVisit(link)
+    }
+    public mutating func visitLinkDefinitions(_ linkDefinitions: LinkDefinitions) -> Result {
+        return defaultVisit(linkDefinitions)
     }
     public mutating func visitSoftBreak(_ softBreak: SoftBreak) -> Result {
         return defaultVisit(softBreak)

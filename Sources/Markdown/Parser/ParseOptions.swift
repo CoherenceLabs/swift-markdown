@@ -24,5 +24,8 @@ public struct ParseOptions: OptionSet {
     
     /// Disable converting straight quotes to curly, --- to em dashes, -- to en dashes during parsing
     public static let disableSmartOpts = ParseOptions(rawValue: 1 << 2)
+    
+    /// Include reference-link definitions such as `[Apple]: https://apple.com` in the document tree.
+    public static let parseReferenceLinkDefinitions = ParseOptions(rawValue: 1 << 3)
 }
 
