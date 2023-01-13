@@ -23,6 +23,25 @@ public extension LinkDefinitions {
         try! self.init(.paragraph(parsedRange: nil, newChildren.map { $0.raw.markup }))
     }
 
+    /// The raw text of the element.
+    var string: String {
+        get {
+            guard case let .linkDefinitions(string) = _data.raw.markup.data else {
+                fatalError("\(self) markup wrapped unexpected \(_data.raw)")
+            }
+            return string
+        }
+        set {
+            _data = _data.replacingSelf(.linkDefinitions(parsedRange: nil, string: newValue))
+        }
+    }
+
+    // MARK: PlainTextConvertibleMarkup
+
+    var plainText: String {
+        return string
+    }
+
     // MARK: Visitation
 
     func accept<V: MarkupVisitor>(_ visitor: inout V) -> V.Result {
