@@ -53,6 +53,7 @@ fileprivate enum CommonMarkNodeType: String {
     case emphasis = "emph"
     case strong
     case link
+    case linkDefinitions = "link_definitions"
     case image
     case none = "NONE"
     case unknown = "<unknown>"
@@ -215,6 +216,8 @@ struct MarkupParser {
             return convertStrong(state)
         case .link:
             return convertLink(state)
+        case .linkDefinitions:
+            return convertLinkDefinitions(state)
         case .image:
             return convertImage(state)
         case .strikethrough:
@@ -455,6 +458,16 @@ struct MarkupParser {
         return MarkupConversion(state: childConversion.state.next(), result: .link(destination: destination, parsedRange: parsedRange, childConversion.result))
     }
 
+    private static func convertLinkDefinitions(_ state: MarkupConverterState) -> MarkupConversion<RawMarkup> {
+        precondition(state.event == CMARK_EVENT_ENTER)
+        precondition(state.nodeType == .linkDefinitions)
+        let parsedRange = state.range(state.node)
+        let childConversion = convertChildren(state)
+        precondition(childConversion.state.node == state.node)
+        precondition(childConversion.state.event == CMARK_EVENT_EXIT)
+        return MarkupConversion(state: childConversion.state.next(), result: .linkDefinitions(parsedRange: parsedRange, childConversion.result))
+    }
+
     private static func convertImage(_ state: MarkupConverterState) -> MarkupConversion<RawMarkup> {
         precondition(state.event == CMARK_EVENT_ENTER)
         precondition(state.nodeType == .image)
@@ -585,6 +598,9 @@ struct MarkupParser {
         var cmarkOptions = CMARK_OPT_TABLE_SPANS
         if !options.contains(.disableSmartOpts) {
             cmarkOptions |= CMARK_OPT_SMART
+        }
+        if options.contains(.parseReferenceLinkDefinitions) {
+            cmarkOptions |= CMARK_OPT_PRESERVE_LINK_DEFINITIONS
         }
         
         let parser = cmark_parser_new(cmarkOptions)
