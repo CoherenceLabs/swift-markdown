@@ -463,9 +463,10 @@ struct MarkupParser {
         precondition(state.nodeType == .linkDefinitions)
         let parsedRange = state.range(state.node)
         let childConversion = convertChildren(state)
+        let text = getLiteralContent(node: state.node)
         precondition(childConversion.state.node == state.node)
         precondition(childConversion.state.event == CMARK_EVENT_EXIT)
-        return MarkupConversion(state: childConversion.state.next(), result: .linkDefinitions(parsedRange: parsedRange, childConversion.result))
+        return MarkupConversion(state: childConversion.state.next(), result: .linkDefinitions(parsedRange: parsedRange, string: text, childConversion.result))
     }
 
     private static func convertImage(_ state: MarkupConverterState) -> MarkupConversion<RawMarkup> {

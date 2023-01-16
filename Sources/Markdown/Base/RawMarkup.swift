@@ -28,7 +28,7 @@ enum RawMarkupData: Equatable {
     case unorderedList(tight: Bool)
     case paragraph
     case blockDirective(name: String, nameLocation: SourceLocation?, arguments: DirectiveArgumentText)
-    case linkDefinitions
+    case linkDefinitions(String)
 
     case inlineCode(String)
     case customInline(String)
@@ -275,8 +275,8 @@ final class RawMarkup: ManagedBuffer<RawMarkupHeader, RawMarkup> {
         return .create(data: .link(destination: destination), parsedRange: parsedRange, children: children)
     }
 
-    static func linkDefinitions(parsedRange: SourceRange?, _ children: [RawMarkup]) -> RawMarkup {
-        return .create(data: .linkDefinitions, parsedRange: parsedRange, children: children)
+    static func linkDefinitions(parsedRange: SourceRange?, string: String, _ children: [RawMarkup]) -> RawMarkup {
+        return .create(data: .linkDefinitions(string), parsedRange: parsedRange, children: children)
     }
 
     static func softBreak(parsedRange: SourceRange?) -> RawMarkup {

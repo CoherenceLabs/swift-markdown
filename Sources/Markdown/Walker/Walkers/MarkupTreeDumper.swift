@@ -177,6 +177,10 @@ struct MarkupTreeDumper: MarkupWalker {
         dump(link, customDescription: link.destination.map { "destination: \"\($0)\"" } ?? "")
     }
 
+    mutating func visitLinkDefinitions(_ linkDefinitions: LinkDefinitions) {
+        dump(linkDefinitions, customDescription: "\"\"\"\(linkDefinitions.string)\"\"\"")
+    }
+
     mutating func visitImage(_ image: Image) {
         var description = image.source.map { "source: \"\($0)\"" } ?? ""
         if let title = image.title {

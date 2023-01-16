@@ -1,6 +1,6 @@
 // A block that contains only reference-link definitions, such as `[Apple]: https://apple.com`.
 // Modeled after `Paragraph`.
-public struct LinkDefinitions: BlockMarkup, BasicInlineContainer {
+public struct LinkDefinitions: BlockMarkup {
     public var _data: _MarkupData
     init(_ data: _MarkupData) {
         self._data = data
@@ -18,10 +18,15 @@ public struct LinkDefinitions: BlockMarkup, BasicInlineContainer {
 // MARK: - Public API
 
 public extension LinkDefinitions {
-    // MARK: InlineContainer
 
-    init<Children: Sequence>(_ newChildren: Children) where Children.Element == InlineMarkup {
-        try! self.init(.linkDefinitions(parsedRange: nil, newChildren.map { $0.raw.markup }))
+    /// The raw text of the element.
+    var string: String {
+        get {
+            guard case let .linkDefinitions(string) = _data.raw.markup.data else {
+                fatalError("\(self) markup wrapped unexpected \(_data.raw)")
+            }
+            return string
+        }
     }
 
     // MARK: Visitation
